@@ -1,7 +1,6 @@
-﻿using CocktailBible.Pages;
-using Parse;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -9,6 +8,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -18,19 +18,26 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=234227
+using Parse;
+
+using CocktailBible.Pages;
+using CocktailBible.Models;
 
 namespace CocktailBible
 {
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
+    /// 
     public sealed partial class App : Application
     {
+        public static ObservableCollection<Recipe> dbRecipes = null;
+        public static bool IsDataLoaded = false;
+     
 #if WINDOWS_PHONE_APP
         private TransitionCollection transitions;
 #endif
-
+      
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -40,6 +47,7 @@ namespace CocktailBible
             this.InitializeComponent();
             this.Suspending += this.OnSuspending;
 
+            ParseObject.RegisterSubclass<Recipe>();
             ParseClient.Initialize("FO1ku1dTu1WddivCaokQhixvR0gnUL7HNQtdFqYz", "KTgyljBY2p7tUt89uMwkBVlRULhQOXtOQDbDjIxz");
         }
 
@@ -76,6 +84,9 @@ namespace CocktailBible
                 }
 
                 // Place the frame in the current Window
+
+                dbRecipes = new ObservableCollection<Recipe>();
+
                 Window.Current.Content = rootFrame;
             }
 
@@ -105,9 +116,23 @@ namespace CocktailBible
                 }
             }
 
+
             // Ensure the current window is active
             Window.Current.Activate();
         }
+
+#if WINDOWS_PHONE_APP
+        protected override void OnActivated(IActivatedEventArgs args)
+        {
+            var root = Window.Current.Content as Frame;
+            var RecipePage = root.Content as RecipePage;
+            if (RecipePage != null && args is FileOpenPickerContinuationEventArgs)
+            {
+                RecipePage.ContinueFileOpenPicker(args as FileOpenPickerContinuationEventArgs);
+            }
+        }
+#endif
+
 
 #if WINDOWS_PHONE_APP
         /// <summary>

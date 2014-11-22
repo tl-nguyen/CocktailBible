@@ -1,0 +1,78 @@
+﻿<Page
+    x:Class="CocktailBible.Pages.RecipePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CocktailBible.Pages"
+    xmlns:vm="using:CocktailBible.ViewModels"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.DataContext>
+        <vm:RecipeViewModel />
+    </Page.DataContext>
+    <Page.BottomAppBar>
+        <CommandBar>
+            <AppBarButton Label="Camera" Icon="Camera" Click="SnapPicture_Click"/>
+            <AppBarButton Label="Save" Icon="Save" Click="Save_Click"/>
+        </CommandBar>
+    </Page.BottomAppBar>
+    <Page.Resources>
+        <Style x:Key="WPHeaderTextBlockStyle" TargetType="TextBlock" BasedOn="{StaticResource BaseTextBlockStyle}">
+            <Setter Property="FontFamily" Value="{ThemeResource PhoneFontFamilySemiLight}"/>
+            <Setter Property="FontSize" Value="25"/>
+            <Setter Property="FontWeight" Value="SemiLight"/>
+            <Setter Property="LineHeight" Value="57.5"/>
+            <Setter Property="TextWrapping" Value="NoWrap" />
+        </Style>
+        <ImageSource x:Key="CameraImageSource">Images/camera_load.png</ImageSource>
+    </Page.Resources>
+    <Grid x:Name="LayoutRoot">
+
+        <Grid.ChildrenTransitions>
+            <TransitionCollection>
+                <EntranceThemeTransition/>
+            </TransitionCollection>
+        </Grid.ChildrenTransitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <ListView Grid.Row="1" x:Name="contentRegion" Margin="0,0,-3.0517578125E-05,-0.166656494140625">
+      
+        <StackPanel Grid.Column="0">
+            <Image x:Name="BBQImage" Source="{Binding ImageSource, Mode=TwoWay}" Canvas.ZIndex="-3" Height="188" Margin="12,0" Width="376" />
+            <Image x:Name="CameraImage" Source="{StaticResource CameraImageSource}" Canvas.ZIndex="-3" Height="250" Margin="12,0" Visibility="Collapsed" Tapped="CameraImage_Tapped"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1"  Orientation="Vertical" Width="390" >
+            <StackPanel Margin="20,50,0,25">
+                <TextBlock Text="Name" FontSize="14"/>
+                <TextBox Text="{Binding Name, Mode=TwoWay}" Margin="0,0,10,0"/>
+            </StackPanel>
+            <StackPanel Margin="20,0,0,25">
+                <TextBlock Text="Description" FontSize="14"/>
+                <TextBox Text="{Binding Description, Mode=TwoWay}" Margin="0,0,10,0"/>
+            </StackPanel>
+            <StackPanel Margin="20,0,0,25">
+                <TextBlock Text="Ingredients" FontSize="14"/>
+                <TextBox Text="{Binding Ingredients, Mode=TwoWay}" Margin="0,0,10,0"/>
+            </StackPanel>
+            <StackPanel Margin="20,0,0,0">
+                <TextBlock Text="Instructions" FontSize="14"/>
+                <TextBox Text="{Binding Instructions, Mode=TwoWay}" Height="150" TextWrapping="Wrap" Margin="0,0,10,0"/>
+            </StackPanel>
+        </StackPanel>
+    </ListView>
+    <!-- Title Panel -->
+        <StackPanel Grid.Row="0" Margin="19,0,0,0">
+            <TextBlock Text="CocktailBible" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
+            <TextBlock x:Name="PageTitle" Text="{Binding Name}" Margin="0,10,0,26.5" Style="{ThemeResource WPHeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
+        </StackPanel>
+
+        <!--TODO: Content should be placed within the following grid-->
+        <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
+
+        </Grid>
+    </Grid>
+</Page>
