@@ -17,11 +17,9 @@ namespace CocktailBible.ViewModels
 
         public RecipesViewModel()
         {
-
             if (!App.IsDataLoaded)
             {
                 LoadData();
-                Recipes = App.dbRecipes;
             }
         }
 

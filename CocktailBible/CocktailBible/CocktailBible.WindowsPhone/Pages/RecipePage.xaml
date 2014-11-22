@@ -42,7 +42,7 @@
         <ListView Grid.Row="1" x:Name="contentRegion" Margin="0,0,-3.0517578125E-05,-0.166656494140625">
       
         <StackPanel Grid.Column="0">
-            <Image x:Name="BBQImage" Source="{Binding ImageSource, Mode=TwoWay}" Canvas.ZIndex="-3" Height="188" Margin="12,0" Width="376" />
+            <Image x:Name="BBQImage" Source="{Binding ImageSource.Url, Mode=TwoWay}" Canvas.ZIndex="-3" Height="376" Margin="12,0" Width="376" />
             <Image x:Name="CameraImage" Source="{StaticResource CameraImageSource}" Canvas.ZIndex="-3" Height="250" Margin="12,0" Visibility="Collapsed" Tapped="CameraImage_Tapped"/>
         </StackPanel>
         <StackPanel Grid.Column="1"  Orientation="Vertical" Width="390" >

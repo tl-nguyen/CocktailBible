@@ -24,14 +24,14 @@
         <GridView x:Name="RecipesGridView" ItemsSource="{Binding Recipes}" SelectionMode="None" Margin="50" Grid.Row="1">
             <GridView.ItemContainerStyle>
                 <Style TargetType="GridViewItem">
-                    <Setter Property="Width" Value="600"/>
-                    <Setter Property="Height" Value="600"/>
+                    <Setter Property="Width" Value="500"/>
+                    <Setter Property="Height" Value="500"/>
                 </Style>
             </GridView.ItemContainerStyle>
             <GridView.ItemTemplate>
                 <DataTemplate>
                     <Grid Tapped="Item_Tapped">
-                        <Image Source="{Binding ImageSource}"/>
+                        <Image Source="{Binding ImageSource.Url}"/>
                         <Border Background="#99000000" VerticalAlignment="Bottom">
                             <TextBlock Grid.Column="1" Text="{Binding Name}"
                                    FontSize="30" Margin="10" VerticalAlignment="Center"/>

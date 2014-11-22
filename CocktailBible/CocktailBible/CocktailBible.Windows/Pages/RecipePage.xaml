@@ -48,8 +48,8 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0">
-                <Image x:Name="BBQImage" Source="{Binding ImageSource, Mode=TwoWay}" Canvas.ZIndex="-3" Height="593" Margin="46,0,0,0" Stretch="UniformToFill" />
-                <Image x:Name="CameraImage" Source="{StaticResource CameraImageSource}" Canvas.ZIndex="-3" Height="593" Margin="46,0,0,0" Stretch="Fill" Tapped="CameraImage_Tapped"/>
+                <Image x:Name="BBQImage" Source="{Binding ImageSource.Url, Mode=TwoWay}" Canvas.ZIndex="-3" Height="500" Margin="46,0,0,0" Stretch="UniformToFill" />
+                <Image x:Name="CameraImage" Source="{StaticResource CameraImageSource}" Canvas.ZIndex="-3" Height="500" Margin="46,0,0,0" Stretch="Fill" Tapped="CameraImage_Tapped"/>
             </StackPanel>
             <StackPanel Grid.Column="1"  Orientation="Vertical" >
                 <StackPanel Margin="50,50,50,25">
