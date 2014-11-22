@@ -56,11 +56,11 @@
             </StackPanel>
             <StackPanel Margin="20,0,0,25">
                 <TextBlock Text="Ingredients" FontSize="14"/>
-                <TextBox Text="{Binding Ingredients, Mode=TwoWay}" Margin="0,0,10,0"/>
+                    <TextBox Text="{Binding Ingredients, Mode=TwoWay}" Height="150" TextWrapping="Wrap" Margin="0,0,10,0"/>
             </StackPanel>
             <StackPanel Margin="20,0,0,0">
                 <TextBlock Text="Instructions" FontSize="14"/>
-                <TextBox Text="{Binding Instructions, Mode=TwoWay}" Height="150" TextWrapping="Wrap" Margin="0,0,10,0"/>
+                <TextBox Text="{Binding Instructions, Mode=TwoWay}" TextWrapping="Wrap" Margin="0,0,10,0"/>
             </StackPanel>
         </StackPanel>
     </ListView>

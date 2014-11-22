@@ -156,10 +156,11 @@ namespace CocktailBible.Pages
             }
         }
 
-        private void Save_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private async void Save_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            string result = (this.DataContext as RecipeViewModel).SaveData();
-             if (result.Contains("Success"))
+            bool result = await (this.DataContext as RecipeViewModel).SaveData();
+
+            if (result)
             {
                 this.Frame.Navigate(typeof(MainPage));
             }

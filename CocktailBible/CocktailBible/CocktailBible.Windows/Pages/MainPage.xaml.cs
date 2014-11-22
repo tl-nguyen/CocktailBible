@@ -26,7 +26,6 @@ namespace CocktailBible.Pages
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-
             (this.DataContext as RecipesViewModel).Recipes = App.dbRecipes;
         }
 

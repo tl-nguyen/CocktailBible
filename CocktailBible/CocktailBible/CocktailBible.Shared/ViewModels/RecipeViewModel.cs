@@ -1,10 +1,14 @@
-﻿using CocktailBible.Models;
-using Parse;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using System.Linq;
 using Windows.ApplicationModel;
+
+using Parse;
+
+using CocktailBible.Models;
+using System.Threading.Tasks;
 
 namespace CocktailBible.ViewModels
 {
@@ -28,34 +32,25 @@ namespace CocktailBible.ViewModels
             _recipe = new Recipe();
         }
 
-        public string SaveData()
+        public async Task<bool> SaveData()
         {
-            string result = string.Empty;
+            int existingRecipeCount = App.dbRecipes.Where(r => r.ObjectId == _recipe.ObjectId).Count();
 
             try
             {
-
-                Recipe existingRecipe = null;
-                    
-                  //(App.Recipes().Where(r => r.Id == Recipe.Id)).SingleOrDefault();
-
-                if (existingRecipe != null)
-                {
-                    //App.dbRecipes.Remove(existingRecipe);
-                    //App.dbRecipes.Add(_recipe);
-                }
-                else
+                if (existingRecipeCount <= 0)
                 {
                     App.dbRecipes.Add(_recipe);
                 }
-                result = "Success";
+
+                await _recipe.SaveAsync();
+
+                return true;
             }
             catch
             {
-                result = "This recipe was not saved.";
+                return false;
             }
-
-            return result;
         }
 
         public string Name 
