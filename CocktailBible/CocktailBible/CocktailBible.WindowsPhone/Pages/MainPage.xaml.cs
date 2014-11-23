@@ -84,6 +84,5 @@ namespace CocktailBible.Pages
                 // TODO:
             }
         }
-        }
     }
 }

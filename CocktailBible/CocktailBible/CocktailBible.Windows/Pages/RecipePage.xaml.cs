@@ -44,6 +44,12 @@ namespace CocktailBible.Pages
                 (this.DataContext as RecipeViewModel).Recipe = e.Parameter as Recipe;
             }
 
+            if (String.IsNullOrEmpty((this.DataContext as RecipeViewModel).Recipe.IsLocal) &&
+                !String.IsNullOrEmpty((this.DataContext as RecipeViewModel).Recipe.Name))
+            {
+                this.BarMenu.Visibility = Visibility.Collapsed;
+            }
+
             navigationHelper.OnNavigatedTo(e);
         }
 

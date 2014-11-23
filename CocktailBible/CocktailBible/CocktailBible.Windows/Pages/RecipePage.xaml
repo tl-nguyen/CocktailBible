@@ -16,7 +16,7 @@
         <vm:RecipeViewModel/>
     </Page.DataContext>
     <Page.BottomAppBar>
-        <CommandBar>
+        <CommandBar Name="BarMenu">
             <AppBarButton Label="Camera" Icon="Camera" Click="SnapPicture_Click"/>
             <AppBarButton Label="Save" Icon="Save" Click="Save_Click"/>
         </CommandBar>
