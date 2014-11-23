@@ -44,6 +44,6 @@ namespace CocktailBible.Models
             set { SetProperty<ParseFile>(value); }
         }
 
-        public bool IsLocal { get; set; }
+        public string IsLocal { get; set; }
     }
 }

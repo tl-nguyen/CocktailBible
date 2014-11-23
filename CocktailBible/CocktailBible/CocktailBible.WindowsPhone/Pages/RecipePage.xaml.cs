@@ -108,11 +108,17 @@ namespace CocktailBible.Pages
         {
             bool result = await (this.DataContext as RecipeViewModel).SaveData();
 
-            if (result)
+            if (!result)
             {
+                MessageDialog dialog = new MessageDialog("Please fill all the fields first");
+                await dialog.ShowAsync();
+            }
+            else
+            {
+                MessageDialog dialog = new MessageDialog("You have successfuly added new recipe");
+                await dialog.ShowAsync();
                 this.Frame.Navigate(typeof(MainPage));
             }
-
         }
 
         private void SnapPicture_Click(object sender, RoutedEventArgs e)

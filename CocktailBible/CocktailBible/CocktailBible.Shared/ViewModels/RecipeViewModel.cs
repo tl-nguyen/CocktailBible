@@ -89,6 +89,14 @@ namespace CocktailBible.ViewModels
         {
             int existingRecipeCount = App.remoteDbRecipes.Where(r => r.ObjectId == _recipe.ObjectId).Count();
 
+            if(String.IsNullOrEmpty(_recipe.Name) ||
+                String.IsNullOrEmpty(_recipe.Ingredients)  ||
+                String.IsNullOrEmpty(_recipe.Instructions))
+            {
+                return false;
+            }
+
+
             try
             {
                 if (existingRecipeCount <= 0)
@@ -103,7 +111,7 @@ namespace CocktailBible.ViewModels
                     }
 
                     await LocalDbManager.AddLocalRecipeAsync(_recipe.Name);
-                    _recipe.IsLocal = true;
+                    _recipe.IsLocal = "Local Recipe";
                 }
 
                 await _recipe.SaveAsync();

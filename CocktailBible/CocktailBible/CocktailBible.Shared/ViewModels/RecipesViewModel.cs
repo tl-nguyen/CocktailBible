@@ -50,6 +50,21 @@ namespace CocktailBible.ViewModels
             }
         }
 
+        public async Task<bool> Remove(Recipe recipeToDelete)
+        {
+            if (!String.IsNullOrEmpty(recipeToDelete.IsLocal))
+            {
+                await recipeToDelete.DeleteAsync();
+
+                App.remoteDbRecipes.Remove(recipeToDelete);
+                
+
+                return true;
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// Creates and adds a few ItemViewModel objects into the Items collection.
         /// </summary>
@@ -75,7 +90,7 @@ namespace CocktailBible.ViewModels
                 {
                     if (recipe.Name == localRecipe.Name)
                     {
-                        recipe.IsLocal = true;
+                        recipe.IsLocal = "Local Recipe";
                     }
                 }
             }
