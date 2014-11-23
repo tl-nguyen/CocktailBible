@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Navigation;
 using CocktailBible.Common;
 using CocktailBible.Models;
 using CocktailBible.ViewModels;
+using System.Threading.Tasks;
 
 namespace CocktailBible.Pages
 {
@@ -33,8 +34,6 @@ namespace CocktailBible.Pages
             get { return this.navigationHelper; }
         }
 
-
-
         /// The methods provided in this section are simply used to allow
         /// NavigationHelper to respond to the page's navigation methods.
         /// 
@@ -46,34 +45,17 @@ namespace CocktailBible.Pages
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            ///**********************************
-            ///Added - start
-            ///**********************************
-
-            //This checks to see if there is a parameter.
-            // if there is, it is currently assuming that the
-            // parameter is of the correct format and data structure
-            // you might want to put a little more in the way
-            // of checks and balances in this if the app gets
-            // more complicated.
-            // 
-            // The parameter is typed to the BBQRecipe model and then added as the 
-            // Recipe in the page's RecipeDetailViewModel.
             if (e.Parameter == null)
             {
                 (this.DataContext as RecipeViewModel).Recipe = new Recipe();
-                PageTitle.Text = "New BBQRecipe";
-                BBQImage.Visibility = Visibility.Collapsed;
+                PageTitle.Text = "New Recipe";
+                CocktailImage.Visibility = Visibility.Collapsed;
             }
             else
             {
                 CameraImage.Visibility = Visibility.Collapsed;
                 (this.DataContext as RecipeViewModel).Recipe = e.Parameter as Recipe;
             }
-            ///**********************************
-            //Added - end
-            ///**********************************
-
 
             navigationHelper.OnNavigatedTo(e);
         }
@@ -101,28 +83,26 @@ namespace CocktailBible.Pages
                 StorageFile file = await dialog.CaptureFileAsync(CameraCaptureUIMode.Photo);
                 if (file != null)
                 {
-
                     using (var streamCamera = await file.OpenAsync(FileAccessMode.Read))
                     {
-
                         BitmapImage bitmapCamera = new BitmapImage();
                         bitmapCamera.SetSource(streamCamera);
 
                         int width = bitmapCamera.PixelWidth;
                         int height = bitmapCamera.PixelHeight;
 
-
                         WriteableBitmap bitmapImage = new WriteableBitmap(width, height);
                         using (IRandomAccessStream fileStream = await file.OpenAsync(FileAccessMode.Read))
                         {
                             bitmapImage.SetSource(fileStream);
                         }
+
                         SaveImageAsJpeg(bitmapImage);
                     }
                 }
                 else
                 {
-                    new MessageDialog("No photo captured.").ShowAsync();
+                    await new MessageDialog("No photo captured.").ShowAsync();
                 }
             }
             catch (Exception ex)
@@ -133,7 +113,6 @@ namespace CocktailBible.Pages
 
         private async void SaveImageAsJpeg(WriteableBitmap image)
         {
-            
             // Create the File Picker control
             FileSavePicker picker = new FileSavePicker();
             picker.FileTypeChoices.Add("JPG File", new List<string>() { ".jpg" });
@@ -142,16 +121,38 @@ namespace CocktailBible.Pages
             if (file != null)
             {
                 // If the file path and name is entered properly, and user has not tapped 'cancel'..
-
                 using (IRandomAccessStream stream = await file.OpenAsync(FileAccessMode.ReadWrite))
                 {
                     // Encode the image into JPG format,reading for saving
                     BitmapEncoder encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.JpegEncoderId, stream);
                     Stream pixelStream = image.PixelBuffer.AsStream();
                     byte[] pixels = new byte[pixelStream.Length];
+
                     await pixelStream.ReadAsync(pixels, 0, pixels.Length);
                     encoder.SetPixelData(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Ignore, (uint)image.PixelWidth, (uint)image.PixelHeight, 96.0, 96.0, pixels);
                     await encoder.FlushAsync();
+
+                    // Save to Parse procedure
+                    RandomAccessStreamReference rasr = RandomAccessStreamReference.CreateFromStream(stream);
+                    var streamWithContent = await rasr.OpenReadAsync();
+                    byte[] buffer = new byte[streamWithContent.Size];
+
+                    try
+                    {
+                        await streamWithContent.ReadAsync(buffer.AsBuffer(), (uint)streamWithContent.Size, InputStreamOptions.None);
+                        var data = buffer;
+
+                        if (data != null)
+                        {
+                            var recipePhoto = new Parse.ParseFile(file.Name, data);
+                            await recipePhoto.SaveAsync();
+                            (this.DataContext as RecipeViewModel).Recipe.ImageSource = recipePhoto;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        //TODO:
+                    }
                 } 
             }
         }
@@ -171,11 +172,9 @@ namespace CocktailBible.Pages
             FileOpenPicker picker = new FileOpenPicker();
             picker.FileTypeFilter.Add(".jpg");
             StorageFile file = await picker.PickSingleFileAsync();
-            //TODO: get the image
-            //(this.DataContext as RecipeViewModel).Recipe.ImageSource = file.Path;
-            BBQImage.Visibility = Visibility.Visible;
+
+            CocktailImage.Visibility = Visibility.Visible;
             CameraImage.Visibility = Visibility.Collapsed;
         }
-
     }
 }

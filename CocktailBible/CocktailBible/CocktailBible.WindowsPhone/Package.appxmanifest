@@ -26,6 +26,16 @@
   <Capabilities>
     <Capability Name="internetClientServer" />
     <Capability Name="picturesLibrary" />
+    <Capability Name="removableStorage" />
+    <m3:Capability Name="appointments" />
+    <m3:Capability Name="contacts" />
+    <Capability Name="enterpriseAuthentication" />
+    <Capability Name="musicLibrary" />
+    <Capability Name="sharedUserCertificates" />
+    <Capability Name="videosLibrary" />
     <DeviceCapability Name="webcam" />
+    <DeviceCapability Name="microphone" />
+    <DeviceCapability Name="location" />
+    <DeviceCapability Name="proximity" />
   </Capabilities>
 </Package>

@@ -10,10 +10,12 @@ using Windows.Devices.Enumeration;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Display;
+using Windows.Graphics.Imaging;
 using Windows.Media.Capture;
 using Windows.Media.Devices;
 using Windows.Storage;
 using Windows.Storage.Pickers;
+using Windows.Storage.Streams;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -22,10 +24,12 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Media.Imaging;
 
 using CocktailBible.Common;
 using CocktailBible.Models;
 using CocktailBible.ViewModels;
+using Windows.UI.Popups;
 
 namespace CocktailBible.Pages
 {
@@ -45,35 +49,18 @@ namespace CocktailBible.Pages
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            ///**********************************
-            ///Added - start
-            ///**********************************
-
-            //This checks to see if there is a parameter.
-            // if there is, it is currently assuming that the
-            // parameter is of the correct format and data structure
-            // you might want to put a little more in the way
-            // of checks and balances in this if the app gets
-            // more complicated.
-            // 
-            // The parameter is typed to the BBQRecipe model and then added as the 
-            // Recipe in the page's RecipeDetailViewModel.
             if (e.Parameter == null)
             {
                 (this.DataContext as RecipeViewModel).Recipe = new Recipe();
-                PageTitle.Text = "New BBQRecipe";
+                PageTitle.Text = "New Recipe";
                 BBQImage.Visibility = Visibility.Collapsed;
                 CameraImage.Visibility = Visibility.Visible;
-
             }
             else
             {
                 CameraImage.Visibility = Visibility.Collapsed;
                 (this.DataContext as RecipeViewModel).Recipe = e.Parameter as Recipe;
             }
-            ///**********************************
-            //Added - end
-            ///**********************************
 
              navigationHelper.OnNavigatedTo(e);
         }
@@ -91,16 +78,33 @@ namespace CocktailBible.Pages
             FileOpenPicker picker = new FileOpenPicker();
             picker.FileTypeFilter.Add(".jpg");
             picker.PickSingleFileAndContinue();  
-
         }
 
-        public void ContinueFileOpenPicker(FileOpenPickerContinuationEventArgs fileOpenPickerContinuationEventArgs)
+        public async void ContinueFileOpenPicker(FileOpenPickerContinuationEventArgs fileOpenPickerContinuationEventArgs)
         {
             if (fileOpenPickerContinuationEventArgs.Files != null)
             {
                 StorageFile file = fileOpenPickerContinuationEventArgs.Files[0];
-                //TODO: get the image
-                //(this.DataContext as RecipeViewModel).Recipe.ImageSource = file.Path;         
+
+                if (file != null)
+                {
+                    using (var streamCamera = await file.OpenAsync(FileAccessMode.Read))
+                    {
+                        BitmapImage bitmapCamera = new BitmapImage();
+                        bitmapCamera.SetSource(streamCamera);
+
+                        int width = bitmapCamera.PixelWidth;
+                        int height = bitmapCamera.PixelHeight;
+
+                        WriteableBitmap bitmapImage = new WriteableBitmap(width, height);
+                        using (IRandomAccessStream fileStream = await file.OpenAsync(FileAccessMode.Read))
+                        {
+                            bitmapImage.SetSource(fileStream);
+                        }
+
+                        SaveImageToParse(file);
+                    }
+                }     
                 BBQImage.Visibility = Visibility.Visible;
                 CameraImage.Visibility = Visibility.Collapsed;
             }
@@ -119,7 +123,52 @@ namespace CocktailBible.Pages
 
         private void SnapPicture_Click(object sender, RoutedEventArgs e)
         {
-          
+            Windows.Storage.Pickers.FileOpenPicker openPicker = new Windows.Storage.Pickers.FileOpenPicker()
+            {
+                SuggestedStartLocation = PickerLocationId.PicturesLibrary,
+                ViewMode = PickerViewMode.Thumbnail
+            };
+
+            // Filter to include a sample subset of file types.
+            openPicker.FileTypeFilter.Clear();
+            openPicker.FileTypeFilter.Add(".bmp");
+            openPicker.FileTypeFilter.Add(".png");
+            openPicker.FileTypeFilter.Add(".jpeg");
+            openPicker.FileTypeFilter.Add(".jpg");
+
+            openPicker.PickSingleFileAndContinue();
+        }
+
+        private async void SaveImageToParse(StorageFile file)
+        {
+            if (file != null)
+            {
+                // If the file path and name is entered properly, and user has not tapped 'cancel'..
+                using (IRandomAccessStream stream = await file.OpenReadAsync())
+                {
+                    // Save to Parse procedure
+                    RandomAccessStreamReference rasr = RandomAccessStreamReference.CreateFromStream(stream);
+                    var streamWithContent = await rasr.OpenReadAsync();
+                    byte[] buffer = new byte[streamWithContent.Size];
+
+                    try
+                    {
+                        await streamWithContent.ReadAsync(buffer.AsBuffer(), (uint)streamWithContent.Size, InputStreamOptions.None);
+                        var data = buffer;
+
+                        if (data != null)
+                        {
+                            var recipePhoto = new Parse.ParseFile(file.Name, data);
+                            await recipePhoto.SaveAsync();
+                            (this.DataContext as RecipeViewModel).Recipe.ImageSource = recipePhoto;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        //TODO:
+                    }
+                }
+            }
         }
 
         private static async Task<DeviceInformation> GetCameraDeviceInfoAsync(Windows.Devices.Enumeration.Panel desiredPanel)
