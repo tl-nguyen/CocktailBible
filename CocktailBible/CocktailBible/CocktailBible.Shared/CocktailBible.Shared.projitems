@@ -6,7 +6,7 @@
     <SharedGUID>6c0cb112-e2fc-4493-88be-63343218b805</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>HowToBBQ</Import_RootNamespace>
+    <Import_RootNamespace>CocktailBible</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <ApplicationDefinition Include="$(MSBuildThisFileDirectory)App.xaml">
@@ -22,6 +22,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\Recipe.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\SQLite.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\SQLiteAsync.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\StatusManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ViewModelBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\RecipesViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\RecipeViewModel.cs" />

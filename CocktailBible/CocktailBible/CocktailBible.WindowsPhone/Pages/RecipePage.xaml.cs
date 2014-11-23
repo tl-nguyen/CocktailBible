@@ -33,9 +33,6 @@ using Windows.UI.Popups;
 
 namespace CocktailBible.Pages
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class RecipePage : Page
     {
         private NavigationHelper navigationHelper;
@@ -65,9 +62,6 @@ namespace CocktailBible.Pages
              navigationHelper.OnNavigatedTo(e);
         }
 
-        /// <summary>
-        /// Gets the <see cref="NavigationHelper"/> associated with this <see cref="Page"/>.
-        /// </summary>
         public NavigationHelper NavigationHelper
         {
             get { return this.navigationHelper; }
@@ -129,7 +123,6 @@ namespace CocktailBible.Pages
                 ViewMode = PickerViewMode.Thumbnail
             };
 
-            // Filter to include a sample subset of file types.
             openPicker.FileTypeFilter.Clear();
             openPicker.FileTypeFilter.Add(".bmp");
             openPicker.FileTypeFilter.Add(".png");
@@ -143,7 +136,6 @@ namespace CocktailBible.Pages
         {
             if (file != null)
             {
-                // If the file path and name is entered properly, and user has not tapped 'cancel'..
                 using (IRandomAccessStream stream = await file.OpenReadAsync())
                 {
                     // Save to Parse procedure

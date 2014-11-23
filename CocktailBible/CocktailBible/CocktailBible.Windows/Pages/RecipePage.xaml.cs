@@ -25,23 +25,10 @@ namespace CocktailBible.Pages
     {
         private NavigationHelper navigationHelper;
 
-        /// <summary>
-        /// NavigationHelper is used on each page to aid in navigation and 
-        /// process lifetime management
-        /// </summary>
         public NavigationHelper NavigationHelper
         {
             get { return this.navigationHelper; }
         }
-
-        /// The methods provided in this section are simply used to allow
-        /// NavigationHelper to respond to the page's navigation methods.
-        /// 
-        /// Page specific logic should be placed in event handlers for the  
-        /// <see cref="GridCS.Common.NavigationHelper.LoadState"/>
-        /// and <see cref="GridCS.Common.NavigationHelper.SaveState"/>.
-        /// The navigation parameter is available in the LoadState method 
-        /// in addition to page state preserved during an earlier session.
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -75,7 +62,6 @@ namespace CocktailBible.Pages
         {
             try
             {
-                // Using Windows.Media.Capture.CameraCaptureUI API to capture a photo
                 CameraCaptureUI dialog = new CameraCaptureUI();
                 Size aspectRatio = new Size(16, 9);
                 dialog.PhotoSettings.CroppedAspectRatio = aspectRatio;

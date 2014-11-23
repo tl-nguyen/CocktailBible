@@ -17,6 +17,7 @@ using CocktailBible.ViewModels;
 using Windows.Networking.Connectivity;
 using Windows.UI.Popups;
 using System.Threading.Tasks;
+using CocktailBible.Utils;
 
 namespace CocktailBible.Pages
 {
@@ -32,30 +33,6 @@ namespace CocktailBible.Pages
             this.NavigationCacheMode = NavigationCacheMode.Required;
         }
 
-        public async Task<bool> CheckInternetConnection()
-        {
-            try
-            {
-                ConnectionProfile InternetConnectionProfile = NetworkInformation.GetInternetConnectionProfile();
-
-                if (InternetConnectionProfile == null)
-                {
-                    MessageDialog dialog = new MessageDialog("No Internet Connection!");
-                    await dialog.ShowAsync();
-                    return false;
-                }
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                MessageDialog dialog = new MessageDialog("Could not retrive Internet connection info!");
-                dialog.ShowAsync();
-                return false;
-            }
-
-        }
-
         /// <summary>
         /// Invoked when this page is about to be displayed in a Frame.
         /// </summary>
@@ -63,9 +40,10 @@ namespace CocktailBible.Pages
         /// This parameter is typically used to configure the page.</param>
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
-            if (!await this.CheckInternetConnection())
+            if (!StatusManager.CheckInternetConnection())
             {
-                return;
+                MessageDialog dialog = new MessageDialog("No Internet Connection!");
+                await dialog.ShowAsync();
             }
 
             if (!App.IsDataLoaded)
