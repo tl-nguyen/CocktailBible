@@ -19,7 +19,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\ObservableDictionary.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\RelayCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\SuspensionManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\LocalRecipe.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Recipe.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\LocalDbManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\SQLite.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\SQLiteAsync.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\StatusManager.cs" />

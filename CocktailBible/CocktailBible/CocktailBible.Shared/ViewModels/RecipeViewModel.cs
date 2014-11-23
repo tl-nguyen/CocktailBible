@@ -9,12 +9,20 @@ using Parse;
 
 using CocktailBible.Models;
 using System.Threading.Tasks;
+using Windows.Storage;
+using SQLite;
+using CocktailBible.Utils;
 
 namespace CocktailBible.ViewModels
 {
     public class RecipeViewModel: ViewModelBase
     {
         private Recipe _recipe;
+
+        public RecipeViewModel()
+        {
+            _recipe = new Recipe();
+        }
 
         public Recipe Recipe
         {
@@ -26,32 +34,6 @@ namespace CocktailBible.ViewModels
                 OnPropertyChanged("Recipe");
             }
         } 
-        
-        public RecipeViewModel()
-        {
-            _recipe = new Recipe();
-        }
-
-        public async Task<bool> SaveData()
-        {
-            int existingRecipeCount = App.dbRecipes.Where(r => r.ObjectId == _recipe.ObjectId).Count();
-
-            try
-            {
-                if (existingRecipeCount <= 0)
-                {
-                    App.dbRecipes.Add(_recipe);
-                }
-
-                await _recipe.SaveAsync();
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
 
         public string Name 
         {
@@ -100,6 +82,37 @@ namespace CocktailBible.ViewModels
             {
                 _recipe.ImageSource = value;
                 OnPropertyChanged("ImageSource");
+            }
+        }
+
+        public async Task<bool> SaveData()
+        {
+            int existingRecipeCount = App.remoteDbRecipes.Where(r => r.ObjectId == _recipe.ObjectId).Count();
+
+            try
+            {
+                if (existingRecipeCount <= 0)
+                {
+                    App.remoteDbRecipes.Add(_recipe);
+
+                    // Add to Local Storage if the recipe doesn't exist
+                    bool dbExists = await LocalDbManager.CheckDbAsync();
+                    if (!dbExists)
+                    {
+                        await LocalDbManager.CreateDatabaseAsync();
+                    }
+
+                    await LocalDbManager.AddLocalRecipeAsync(_recipe.Name);
+                    _recipe.IsLocal = true;
+                }
+
+                await _recipe.SaveAsync();
+
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
     }

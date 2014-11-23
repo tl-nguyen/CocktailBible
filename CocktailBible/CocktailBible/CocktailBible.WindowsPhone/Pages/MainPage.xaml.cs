@@ -48,7 +48,7 @@ namespace CocktailBible.Pages
 
             if (!App.IsDataLoaded)
             {
-                (this.DataContext as RecipesViewModel).Recipes = App.dbRecipes;
+                (this.DataContext as RecipesViewModel).Recipes = App.remoteDbRecipes;
             }
         }
 

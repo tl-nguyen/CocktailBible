@@ -33,7 +33,7 @@ namespace CocktailBible.Pages
                 await dialog.ShowAsync();
             }
 
-            (this.DataContext as RecipesViewModel).Recipes = App.dbRecipes;
+            (this.DataContext as RecipesViewModel).Recipes = App.remoteDbRecipes;
         }
 
         private void Item_Tapped(object sender, TappedRoutedEventArgs e)

@@ -31,7 +31,7 @@ namespace CocktailBible
     /// 
     public sealed partial class App : Application
     {
-        public static ObservableCollection<Recipe> dbRecipes = null;
+        public static ObservableCollection<Recipe> remoteDbRecipes = null;
         public static bool IsDataLoaded = false;
      
 #if WINDOWS_PHONE_APP
@@ -85,7 +85,7 @@ namespace CocktailBible
 
                 // Place the frame in the current Window
 
-                dbRecipes = new ObservableCollection<Recipe>();
+                remoteDbRecipes = new ObservableCollection<Recipe>();
 
                 Window.Current.Content = rootFrame;
             }

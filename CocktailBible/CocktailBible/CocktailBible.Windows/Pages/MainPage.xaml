@@ -36,6 +36,9 @@
                             <TextBlock Grid.Column="1" Text="{Binding Name}"
                                    FontSize="30" Margin="10" VerticalAlignment="Center"/>
                         </Border>
+
+                        <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding IsLocal}"
+                                   FontSize="30" Margin="10" VerticalAlignment="Center"/>
                     </Grid>
                 </DataTemplate>
             </GridView.ItemTemplate>
