@@ -1,4 +1,8 @@
 ﻿using CocktailBible.ViewModels;
+using System;
+using System.Threading.Tasks;
+using Windows.Networking.Connectivity;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -19,13 +23,42 @@ namespace CocktailBible.Pages
             this.InitializeComponent();
         }
 
-        private void Add_Click(object sender, RoutedEventArgs e)
+        public async Task<bool> CheckInternetConnection()
+        {
+            try
+            {
+                ConnectionProfile InternetConnectionProfile = NetworkInformation.GetInternetConnectionProfile();
+
+                if (InternetConnectionProfile == null)
+                {
+                    MessageDialog dialog = new MessageDialog("No Internet Connection!\n Must have Internet Connection in order to manipulate your blacklist!");
+                    await dialog.ShowAsync();
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageDialog dialog = new MessageDialog("Could not retrive Internet connection info!");
+                dialog.ShowAsync();
+                return false;
+            }
+
+        }
+
+        private async void Add_Click(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(typeof(RecipePage));
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
+            if (!await this.CheckInternetConnection())
+            {
+                return;
+            }
+
             (this.DataContext as RecipesViewModel).Recipes = App.dbRecipes;
         }
 

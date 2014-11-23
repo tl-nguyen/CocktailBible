@@ -14,6 +14,9 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 using CocktailBible.ViewModels;
+using Windows.Networking.Connectivity;
+using Windows.UI.Popups;
+using System.Threading.Tasks;
 
 namespace CocktailBible.Pages
 {
@@ -29,20 +32,49 @@ namespace CocktailBible.Pages
             this.NavigationCacheMode = NavigationCacheMode.Required;
         }
 
+        public async Task<bool> CheckInternetConnection()
+        {
+            try
+            {
+                ConnectionProfile InternetConnectionProfile = NetworkInformation.GetInternetConnectionProfile();
+
+                if (InternetConnectionProfile == null)
+                {
+                    MessageDialog dialog = new MessageDialog("No Internet Connection!");
+                    await dialog.ShowAsync();
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageDialog dialog = new MessageDialog("Could not retrive Internet connection info!");
+                dialog.ShowAsync();
+                return false;
+            }
+
+        }
+
         /// <summary>
         /// Invoked when this page is about to be displayed in a Frame.
         /// </summary>
         /// <param name="e">Event data that describes how this page was reached.
         /// This parameter is typically used to configure the page.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
+            if (!await this.CheckInternetConnection())
+            {
+                return;
+            }
+
             if (!App.IsDataLoaded)
             {
                 (this.DataContext as RecipesViewModel).Recipes = App.dbRecipes;
             }
         }
 
-        private void Add_Click(object sender, RoutedEventArgs e)
+        private async void Add_Click(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(typeof(RecipePage));
         }
