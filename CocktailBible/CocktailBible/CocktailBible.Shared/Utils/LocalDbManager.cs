@@ -63,5 +63,19 @@ namespace CocktailBible.Utils
 
             return result;
         }
+
+        public static async Task DeleteRecipeAsync(string name)
+        {
+            SQLiteAsyncConnection conn = new SQLiteAsyncConnection(DBNAME);
+
+            // Retrieve Article
+            var article = await conn.Table<LocalRecipe>().Where(x => x.Name == name).FirstOrDefaultAsync();
+            if (article != null)
+            {
+                // Delete record
+                await conn.DeleteAsync(article);
+            }
+        }
+
     }
 }

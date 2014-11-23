@@ -54,10 +54,19 @@ namespace CocktailBible.ViewModels
         {
             if (!String.IsNullOrEmpty(recipeToDelete.IsLocal))
             {
-                await recipeToDelete.DeleteAsync();
+                try
+                {
+                    await recipeToDelete.DeleteAsync();
+                }
+                catch (Exception ex)
+                {
+                    //TODO:
+                }
 
-                App.remoteDbRecipes.Remove(recipeToDelete);
+                await LocalDbManager.DeleteRecipeAsync(recipeToDelete.Name);
                 
+                App.remoteDbRecipes.Remove(recipeToDelete);
+                this.recipes.Remove(recipeToDelete);
 
                 return true;
             }
